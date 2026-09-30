@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Interactive Profile Generator project by Razmus Pålsson."
+    >
+
+    <title>Profile Generator | Java Projects</title>
+
+    <link
+        rel="stylesheet"
+        href="../main.css"
+    >
+
+    <style>
+        .project-page {
+            min-height: 100vh;
+            padding: 32px 20px 80px;
+        }
+
+        .project-shell {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .project-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .back-link {
+            color: var(--muted);
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-light);
+        }
+
+        .project-label {
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .project-header {
+            margin-bottom: 36px;
+        }
+
+        .project-header h1 {
+            margin: 10px 0 12px;
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            line-height: 1;
+        }
+
+        .project-header p {
+            max-width: 760px;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .generator-layout {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .form-card,
+        .preview-card,
+        .detail-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+        }
+
+        .form-card,
+        .preview-card {
+            padding: 28px;
+        }
+
+        .section-heading {
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            margin: 8px 0 6px;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        .profile-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface-light);
+            color: var(--text);
+            font: inherit;
+            padding: 13px 14px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .interest-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .interest-option {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface-light);
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .interest-option:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .interest-option input {
+            accent-color: var(--accent);
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .action-button {
+            min-height: 48px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-button.primary {
+            background: var(--accent);
+            color: #111;
+            border-color: var(--accent);
+        }
+
+        .action-button.secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .preview-wrap {
+            display: grid;
+            gap: 18px;
+        }
+
+        .profile-preview {
+            position: relative;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(245, 158, 11, 0.1),
+                    transparent 45%
+                ),
+                var(--surface-light);
+            min-height: 500px;
+        }
+
+        .profile-banner {
+            height: 115px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(245, 158, 11, 0.95),
+                    rgba(251, 191, 36, 0.45)
+                );
+        }
+
+        .profile-content {
+            padding: 0 26px 28px;
+        }
+
+        .avatar {
+            width: 96px;
+            height: 96px;
+            margin-top: -48px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            border: 5px solid var(--surface-light);
+            background: var(--surface);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-light);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-name {
+            margin: 18px 0 4px;
+            font-size: 2rem;
+        }
+
+        .profile-role {
+            color: var(--accent-light);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-location {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .profile-bio {
+            margin: 22px 0;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .profile-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .meta-box {
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border);
+        }
+
+        .meta-box span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .meta-box strong {
+            font-size: 0.98rem;
+        }
+
+        .interest-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .interest-tag {
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-light);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .console-box {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #05070a;
+        }
+
+        .console-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .console-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .console-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #444;
+        }
+
+        .console-output {
+            margin: 0;
+            padding: 20px;
+            min-height: 220px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            color: #d6deeb;
+            font-family:
+                "SFMono-Regular",
+                Consolas,
+                "Liberation Mono",
+                monospace;
+            font-size: 0.88rem;
+            line-height: 1.65;
+        }
+
+        .project-details {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .detail-card {
+            padding: 20px;
+        }
+
+        .detail-card span {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .detail-card h3 {
+            margin: 10px 0 8px;
+        }
+
+        .detail-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.55;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .generator-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .project-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-row,
+            .interest-grid,
+            .form-actions,
+            .profile-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card,
+            .preview-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="project-page">
+
+        <div class="project-shell">
+
+            <nav class="project-nav">
+
+                <a
+                    class="back-link"
+                    href="../index.html"
+                >
+                    ← Back to Java Projects
+                </a>
+
+                <span class="project-label">
+                    Java Project
+                </span>
+
+            </nav>
+
+            <header class="project-header">
+
+                <span class="project-label">
+                    Interactive Project
+                </span>
+
+                <h1>
+                    Profile Generator
+                </h1>
+
+                <p>
+                    An interactive profile builder based on a simple
+                    Java input-and-output project. Enter user information,
+                    preferences and interests to generate a formatted
+                    profile and console-style output.
+                </p>
+
+            </header>
+
+            <div class="generator-layout">
+
+                <!-- ========================= -->
+                <!-- FORM -->
+                <!-- ========================= -->
+
+                <section class="form-card">
+
+                    <div class="section-heading">
+
+                        <span class="project-label">
+                            User Input
+                        </span>
+
+                        <h2>
+                            Build a Profile
+                        </h2>
+
+                        <p>
+                            Fill in the fields below. The profile updates
+                            automatically while you type.
+                        </p>
+
+                    </div>
+
+                    <form
+                        class="profile-form"
+                        id="profileForm"
+                    >
+
+                        <div class="form-group">
+
+                            <label for="name">
+                                Name
+                            </label>
+
+                            <input
+                                id="name"
+                                type="text"
+                                placeholder="Example: Alex Morgan"
+                                value="Alex Morgan"
+                            >
+
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="age">
+                                    Age
+                                </label>
+
+                                <input
+                                    id="age"
+                                    type="number"
+                                    min="1"
+                                    max="120"
+                                    value="24"
+                                >
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="occupation">
+                                    Occupation
+                                </label>
+
+                                <input
+                                    id="occupation"
+                                    type="text"
+                                    value="Software Student"
+                                    placeholder="Example: Developer"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="city">
+                                    City
+                                </label>
+
+                                <input
+                                    id="city"
+                                    type="text"
+                                    value="Stockholm"
+                                    placeholder="Example: Stockholm"
+                                >
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="country">
+                                    Country
+                                </label>
+
+                                <input
+                                    id="country"
+                                    type="text"
+                                    value="Sweden"
+                                    placeholder="Example: Sweden"
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="favoriteLanguage">
+                                    Favorite Language
+                                </label>
+
+                                <select id="favoriteLanguage">
+
+                                    <option value="Java">
+                                        Java
+                                    </option>
+
+                                    <option value="Python">
+                                        Python
+                                    </option>
+
+                                    <option value="JavaScript">
+                                        JavaScript
+                                    </option>
+
+                                    <option value="C#">
+                                        C#
+                                    </option>
+
+                                    <option value="C++">
+                                        C++
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="experience">
+                                    Experience Level
+                                </label>
+
+                                <select id="experience">
+
+                                    <option value="Beginner">
+                                        Beginner
+                                    </option>
+
+                                    <option
+                                        value="Intermediate"
+                                        selected
+                                    >
+                                        Intermediate
+                                    </option>
+
+                                    <option value="Advanced">
+                                        Advanced
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="bio">
+                                About
+                            </label>
+
+                            <textarea
+                                id="bio"
+                                placeholder="Write a short profile description..."
+                            >Interested in software development, problem-solving and learning new technologies.</textarea>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>
+                                Interests
+                            </label>
+
+                            <div class="interest-grid">
+
+                                <label class="interest-option">
+                                    <input
+                                        type="checkbox"
+                                        value="Programming"
+                                        checked
+                                    >
+                                    Programming
+                                </label>
+
+                                <label class="interest-option">
+                                    <input
+                                        type="checkbox"
+                                        value="Gaming"
+                                        checked
+                                    >
+                                    Gaming
+                                </label>
+
+                                <label class="interest-option">
+                                    <input
+                                        type="checkbox"
+                                        value="Fitness"
+                                    >
+                                    Fitness
+                                </label>
+
+                                <label class="interest-option">
+                                    <input
+                                        type="checkbox"
+                                        value="Travel"
+                                        checked
+                                    >
+                                    Travel
+                                </label>
+
+                                <label class="interest-option">
+                                    <input
+                                        type="checkbox"
+                                        value="Languages"
+                                    >
+                                    Languages
+                                </label>
+
+                                <label class="interest-option">
+                                    <input
+                                        type="checkbox"
+                                        value="Music"
+                                    >
+                                    Music
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+
+                            <button
+                                class="action-button primary"
+                                type="button"
+                                id="generateButton"
+                            >
+                                Generate Profile
+                            </button>
+
+                            <button
+                                class="action-button secondary"
+                                type="button"
+                                id="resetButton"
+                            >
+                                Reset
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+                <!-- ========================= -->
+                <!-- PREVIEW -->
+                <!-- ========================= -->
+
+                <section class="preview-card">
+
+                    <div class="section-heading">
+
+                        <span class="project-label">
+                            Output
+                        </span>
+
+                        <h2>
+                            Generated Profile
+                        </h2>
+
+                        <p>
+                            A visual version and console-style version
+                            of the generated result.
+                        </p>
+
+                    </div>
+
+                    <div class="preview-wrap">
+
+                        <article class="profile-preview">
+
+                            <div class="profile-banner"></div>
+
+                            <div class="profile-content">
+
+                                <div
+                                    class="avatar"
+                                    id="avatar"
+                                >
+                                    AM
+                                </div>
+
+                                <h2
+                                    class="profile-name"
+                                    id="previewName"
+                                >
+                                    Alex Morgan
+                                </h2>
+
+                                <div
+                                    class="profile-role"
+                                    id="previewOccupation"
+                                >
+                                    Software Student
+                                </div>
+
+                                <div
+                                    class="profile-location"
+                                    id="previewLocation"
+                                >
+                                    Stockholm, Sweden
+                                </div>
+
+                                <p
+                                    class="profile-bio"
+                                    id="previewBio"
+                                >
+                                    Interested in software development,
+                                    problem-solving and learning new technologies.
+                                </p>
+
+                                <div class="profile-meta">
+
+                                    <div class="meta-box">
+
+                                        <span>
+                                            Age
+                                        </span>
+
+                                        <strong id="previewAge">
+                                            24
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="meta-box">
+
+                                        <span>
+                                            Experience
+                                        </span>
+
+                                        <strong id="previewExperience">
+                                            Intermediate
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="meta-box">
+
+                                        <span>
+                                            Favorite Language
+                                        </span>
+
+                                        <strong id="previewLanguage">
+                                            Java
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="meta-box">
+
+                                        <span>
+                                            Interests
+                                        </span>
+
+                                        <strong id="interestCount">
+                                            3 selected
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="interest-list"
+                                    id="interestList"
+                                ></div>
+
+                            </div>
+
+                        </article>
+
+                        <div class="console-box">
+
+                            <div class="console-header">
+
+                                <div class="console-dots">
+                                    <span class="console-dot"></span>
+                                    <span class="console-dot"></span>
+                                    <span class="console-dot"></span>
+                                </div>
+
+                                <span>
+                                    ProfileGenerator.java
+                                </span>
+
+                            </div>
+
+                            <pre
+                                class="console-output"
+                                id="consoleOutput"
+                            ></pre>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <section class="project-details">
+
+                <article class="detail-card">
+
+                    <span>
+                        Java Focus
+                    </span>
+
+                    <h3>
+                        User Input
+                    </h3>
+
+                    <p>
+                        The original Java version practices collecting
+                        input using variables and Scanner before processing
+                        and displaying the results.
+                    </p>
+
+                </article>
+
+                <article class="detail-card">
+
+                    <span>
+                        Concept
+                    </span>
+
+                    <h3>
+                        Data Formatting
+                    </h3>
+
+                    <p>
+                        Multiple user values are combined into a clear
+                        formatted profile instead of being printed as
+                        unrelated pieces of information.
+                    </p>
+
+                </article>
+
+                <article class="detail-card">
+
+                    <span>
+                        Learning
+                    </span>
+
+                    <h3>
+                        Variables & Strings
+                    </h3>
+
+                    <p>
+                        The project practices strings, numeric values,
+                        selections, conditions and structured program output.
+                    </p>
+
+                </article>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <script>
+        const nameInput =
+            document.getElementById("name");
+
+        const ageInput =
+            document.getElementById("age");
+
+        const occupationInput =
+            document.getElementById("occupation");
+
+        const cityInput =
+            document.getElementById("city");
+
+        const countryInput =
+            document.getElementById("country");
+
+        const languageInput =
+            document.getElementById("favoriteLanguage");
+
+        const experienceInput =
+            document.getElementById("experience");
+
+        const bioInput =
+            document.getElementById("bio");
+
+        const interestInputs =
+            document.querySelectorAll(
+                '.interest-option input[type="checkbox"]'
+            );
+
+        const previewName =
+            document.getElementById("previewName");
+
+        const previewOccupation =
+            document.getElementById("previewOccupation");
+
+        const previewLocation =
+            document.getElementById("previewLocation");
+
+        const previewBio =
+            document.getElementById("previewBio");
+
+        const previewAge =
+            document.getElementById("previewAge");
+
+        const previewExperience =
+            document.getElementById("previewExperience");
+
+        const previewLanguage =
+            document.getElementById("previewLanguage");
+
+        const interestList =
+            document.getElementById("interestList");
+
+        const interestCount =
+            document.getElementById("interestCount");
+
+        const avatar =
+            document.getElementById("avatar");
+
+        const consoleOutput =
+            document.getElementById("consoleOutput");
+
+        const generateButton =
+            document.getElementById("generateButton");
+
+        const resetButton =
+            document.getElementById("resetButton");
+
+        function getInterests() {
+            return Array.from(
+                interestInputs
+            )
+                .filter(
+                    input =>
+                        input.checked
+                )
+                .map(
+                    input =>
+                        input.value
+                );
+        }
+
+        function getInitials(name) {
+            const words =
+                name
+                    .trim()
+                    .split(/\s+/)
+                    .filter(Boolean);
+
+            if (words.length === 0) {
+                return "?";
+            }
+
+            return words
+                .slice(0, 2)
+                .map(
+                    word =>
+                        word[0]
+                            .toUpperCase()
+                )
+                .join("");
+        }
+
+        function generateProfile() {
+            const name =
+                nameInput.value.trim() ||
+                "Unnamed User";
+
+            const age =
+                ageInput.value.trim() ||
+                "Not specified";
+
+            const occupation =
+                occupationInput.value.trim() ||
+                "No occupation entered";
+
+            const city =
+                cityInput.value.trim();
+
+            const country =
+                countryInput.value.trim();
+
+            const location =
+                [city, country]
+                    .filter(Boolean)
+                    .join(", ") ||
+                "Location not specified";
+
+            const language =
+                languageInput.value;
+
+            const experience =
+                experienceInput.value;
+
+            const bio =
+                bioInput.value.trim() ||
+                "No profile description provided.";
+
+            const interests =
+                getInterests();
+
+            previewName.textContent =
+                name;
+
+            previewOccupation.textContent =
+                occupation;
+
+            previewLocation.textContent =
+                location;
+
+            previewBio.textContent =
+                bio;
+
+            previewAge.textContent =
+                age;
+
+            previewExperience.textContent =
+                experience;
+
+            previewLanguage.textContent =
+                language;
+
+            avatar.textContent =
+                getInitials(name);
+
+            interestCount.textContent =
+                `${interests.length} selected`;
+
+            interestList.innerHTML = "";
+
+            if (interests.length === 0) {
+                const emptyTag =
+                    document.createElement("span");
+
+                emptyTag.className =
+                    "interest-tag";
+
+                emptyTag.textContent =
+                    "No interests selected";
+
+                interestList.appendChild(
+                    emptyTag
+                );
+            } else {
+                interests.forEach(
+                    interest => {
+                        const tag =
+                            document.createElement(
+                                "span"
+                            );
+
+                        tag.className =
+                            "interest-tag";
+
+                        tag.textContent =
+                            interest;
+
+                        interestList.appendChild(
+                            tag
+                        );
+                    }
+                );
+            }
+
+            const interestsText =
+                interests.length > 0
+                    ? interests.join(", ")
+                    : "None";
+
+            consoleOutput.textContent =
+`================================
+        USER PROFILE
+================================
+
+Name: ${name}
+Age: ${age}
+Occupation: ${occupation}
+Location: ${location}
+
+Favorite Programming Language:
+${language}
+
+Experience Level:
+${experience}
+
+Interests:
+${interestsText}
+
+About:
+${bio}
+
+================================
+Profile generated successfully.
+================================`;
+        }
+
+        function resetProfile() {
+            nameInput.value =
+                "Alex Morgan";
+
+            ageInput.value =
+                "24";
+
+            occupationInput.value =
+                "Software Student";
+
+            cityInput.value =
+                "Stockholm";
+
+            countryInput.value =
+                "Sweden";
+
+            languageInput.value =
+                "Java";
+
+            experienceInput.value =
+                "Intermediate";
+
+            bioInput.value =
+                "Interested in software development, problem-solving and learning new technologies.";
+
+            interestInputs.forEach(
+                input => {
+                    input.checked =
+                        [
+                            "Programming",
+                            "Gaming",
+                            "Travel"
+                        ].includes(
+                            input.value
+                        );
+                }
+            );
+
+            generateProfile();
+        }
+
+        const liveInputs = [
+            nameInput,
+            ageInput,
+            occupationInput,
+            cityInput,
+            countryInput,
+            languageInput,
+            experienceInput,
+            bioInput
+        ];
+
+        liveInputs.forEach(
+            input => {
+                input.addEventListener(
+                    "input",
+                    generateProfile
+                );
+
+                input.addEventListener(
+                    "change",
+                    generateProfile
+                );
+            }
+        );
+
+        interestInputs.forEach(
+            input => {
+                input.addEventListener(
+                    "change",
+                    generateProfile
+                );
+            }
+        );
+
+        generateButton.addEventListener(
+            "click",
+            generateProfile
+        );
+
+        resetButton.addEventListener(
+            "click",
+            resetProfile
+        );
+
+        generateProfile();
+    </script>
+
+</body>
+</html>
