@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EV Charging Calculator | Java Projects</title>
+
+    <link
+        rel="stylesheet"
+        href="../main.css"
+    >
+
+    <style>
+
+        .demo-page {
+            width: min(calc(100% - 40px), 1050px);
+            margin: 0 auto;
+            padding: 70px 0 120px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 40px;
+            color: #f59e0b;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .project-intro {
+            margin-bottom: 45px;
+        }
+
+        .project-intro h1 {
+            font-size: clamp(2.5rem, 6vw, 4.8rem);
+            line-height: 1;
+            letter-spacing: -0.06em;
+        }
+
+        .project-intro p {
+            max-width: 700px;
+            margin-top: 20px;
+            color: #9ca6b5;
+        }
+
+        .calculator-shell {
+            overflow: hidden;
+            margin-top: 45px;
+            border: 1px solid #293241;
+            border-radius: 18px;
+            background: #0e131b;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
+        }
+
+        .window-bar {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 16px;
+            border-bottom: 1px solid #252d3a;
+            background: #0a0e14;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .window-dot:nth-child(1) {
+            background: #ef4444;
+        }
+
+        .window-dot:nth-child(2) {
+            background: #f59e0b;
+        }
+
+        .window-dot:nth-child(3) {
+            background: #22c55e;
+        }
+
+        .window-title {
+            margin-left: auto;
+            color: #778196;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            padding: 34px;
+        }
+
+        .form-panel,
+        .result-panel {
+            padding: 26px;
+            border: 1px solid #293241;
+            border-radius: 14px;
+            background: #111722;
+        }
+
+        .section-label {
+            display: block;
+            margin-bottom: 18px;
+            color: #f59e0b;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.13em;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b6bfcc;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            border: 1px solid #303847;
+            border-radius: 8px;
+            outline: none;
+            background: #090d13;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #f59e0b;
+        }
+
+        .range-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .range-line input[type="range"] {
+            flex: 1;
+            height: auto;
+            padding: 0;
+            border: none;
+            background: transparent;
+        }
+
+        .range-value {
+            min-width: 54px;
+            text-align: right;
+            color: #f59e0b;
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .calculate-button {
+            width: 100%;
+            min-height: 50px;
+            border: none;
+            border-radius: 9px;
+            background: #f59e0b;
+            color: #111;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.95rem;
+            transition:
+                transform 0.15s ease,
+                opacity 0.15s ease;
+        }
+
+        .calculate-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .result-main {
+            margin-bottom: 28px;
+        }
+
+        .result-main p {
+            color: #8f99a8;
+            font-size: 0.85rem;
+        }
+
+        .result-main strong {
+            display: block;
+            margin-top: 8px;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            letter-spacing: -0.06em;
+        }
+
+        .result-main strong span {
+            color: #f59e0b;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .metric-card {
+            padding: 16px;
+            border: 1px solid #293241;
+            border-radius: 10px;
+            background: #0b1017;
+        }
+
+        .metric-card span {
+            display: block;
+            margin-bottom: 7px;
+            color: #7f8998;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .metric-card strong {
+            font-size: 1.1rem;
+        }
+
+        .charge-visual {
+            margin-top: 28px;
+        }
+
+        .charge-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #8f99a8;
+            font-size: 0.8rem;
+        }
+
+        .charge-bar {
+            height: 12px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #252d3a;
+        }
+
+        .charge-fill {
+            height: 100%;
+            width: 60%;
+            border-radius: inherit;
+            background: #22c55e;
+            transition: width 0.35s ease;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 14px;
+            border: 1px solid #303847;
+            border-radius: 8px;
+            background: #0b1017;
+            color: #929cab;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .project-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 70px;
+        }
+
+        .info-card {
+            padding: 28px;
+            border: 1px solid #252d3a;
+            border-radius: 12px;
+            background: #0e131b;
+        }
+
+        .info-card h2 {
+            margin-bottom: 14px;
+        }
+
+        .info-card p {
+            color: #9ca6b5;
+        }
+
+        @media (max-width: 800px) {
+
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .field-row,
+            .metrics-grid,
+            .project-details {
+                grid-template-columns: 1fr;
+            }
+
+            .calculator-content {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="demo-page">
+
+        <a
+            href="../index.html#projects"
+            class="back-link"
+        >
+            ← Back to Java Projects
+        </a>
+
+        <section class="project-intro">
+
+            <p class="eyebrow">
+                JAVA UTILITY PROJECT
+            </p>
+
+            <h1>
+                EV Charging Calculator
+            </h1>
+
+            <p>
+                An interactive representation of my Java charging-time calculator.
+                Enter battery capacity, charging conditions and current charge level
+                to estimate the time required to reach your target.
+            </p>
+
+        </section>
+
+
+        <section class="calculator-shell">
+
+            <div class="window-bar">
+
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+
+                <span class="window-title">
+                    CalcCharge.java
+                </span>
+
+            </div>
+
+
+            <div class="calculator-content">
+
+                <section class="form-panel">
+
+                    <span class="section-label">
+                        CHARGING INPUT
+                    </span>
+
+                    <div class="field">
+
+                        <label for="batteryCapacity">
+                            Battery capacity (kWh)
+                        </label>
+
+                        <input
+                            id="batteryCapacity"
+                            type="number"
+                            min="1"
+                            step="0.1"
+                            value="75"
+                        >
+
+                    </div>
+
+
+                    <div class="field-row">
+
+                        <div class="field">
+
+                            <label for="voltage">
+                                Voltage (V)
+                            </label>
+
+                            <input
+                                id="voltage"
+                                type="number"
+                                min="1"
+                                step="1"
+                                value="230"
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="current">
+                                Current (A)
+                            </label>
+
+                            <input
+                                id="current"
+                                type="number"
+                                min="1"
+                                step="1"
+                                value="16"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="phases">
+                            Charging phases
+                        </label>
+
+                        <select id="phases">
+
+                            <option value="1">
+                                Single-phase
+                            </option>
+
+                            <option
+                                value="3"
+                                selected
+                            >
+                                Three-phase
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Current battery level
+                        </label>
+
+                        <div class="range-line">
+
+                            <input
+                                id="currentCharge"
+                                type="range"
+                                min="0"
+                                max="100"
+                                value="20"
+                            >
+
+                            <span
+                                id="currentChargeValue"
+                                class="range-value"
+                            >
+                                20%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Target battery level
+                        </label>
+
+                        <div class="range-line">
+
+                            <input
+                                id="targetCharge"
+                                type="range"
+                                min="1"
+                                max="100"
+                                value="80"
+                            >
+
+                            <span
+                                id="targetChargeValue"
+                                class="range-value"
+                            >
+                                80%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="efficiency">
+                            Charging efficiency
+                        </label>
+
+                        <select id="efficiency">
+
+                            <option value="0.85">
+                                85%
+                            </option>
+
+                            <option
+                                value="0.90"
+                                selected
+                            >
+                                90%
+                            </option>
+
+                            <option value="0.95">
+                                95%
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        id="calculateButton"
+                        class="calculate-button"
+                    >
+                        Calculate Charging Time
+                    </button>
+
+                </section>
+
+
+                <section class="result-panel">
+
+                    <div>
+
+                        <span class="section-label">
+                            ESTIMATED RESULT
+                        </span>
+
+                        <div class="result-main">
+
+                            <p>
+                                Estimated charging time
+                            </p>
+
+                            <strong>
+                                <span id="resultHours">
+                                    4 h 4 min
+                                </span>
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metrics-grid">
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Charging power
+                                </span>
+
+                                <strong id="powerResult">
+                                    11.04 kW
+                                </strong>
+
+                            </div>
+
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Energy required
+                                </span>
+
+                                <strong id="energyResult">
+                                    45.00 kWh
+                                </strong>
+
+                            </div>
+
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Effective power
+                                </span>
+
+                                <strong id="effectivePowerResult">
+                                    9.94 kW
+                                </strong>
+
+                            </div>
+
+
+                            <div class="metric-card">
+
+                                <span>
+                                    Charge increase
+                                </span>
+
+                                <strong id="chargeIncreaseResult">
+                                    60%
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="charge-visual">
+
+                            <div class="charge-labels">
+
+                                <span>
+                                    Battery progress
+                                </span>
+
+                                <span id="batteryLabel">
+                                    20% → 80%
+                                </span>
+
+                            </div>
+
+                            <div class="charge-bar">
+
+                                <div
+                                    id="chargeFill"
+                                    class="charge-fill"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="notice"
+                        class="notice"
+                    >
+                        Estimates are simplified and do not account for
+                        charging curves, temperature, battery management
+                        systems or vehicle-specific limits.
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <section class="project-details">
+
+            <article class="info-card">
+
+                <p class="eyebrow">
+                    PROGRAMMING CONCEPTS
+                </p>
+
+                <h2>
+                    Calculations & validation
+                </h2>
+
+                <p>
+                    The Java project works with numerical input,
+                    formulas, condition checks and validation to calculate
+                    estimated electric vehicle charging times.
+                </p>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <p class="eyebrow">
+                    INTERACTIVE VERSION
+                </p>
+
+                <h2>
+                    Utility-style interface
+                </h2>
+
+                <p>
+                    The browser interface makes the original logic easier
+                    to explore by letting visitors change values and see
+                    calculated results immediately.
+                </p>
+
+            </article>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const batteryCapacity =
+            document.getElementById(
+                "batteryCapacity"
+            );
+
+        const voltage =
+            document.getElementById(
+                "voltage"
+            );
+
+        const current =
+            document.getElementById(
+                "current"
+            );
+
+        const phases =
+            document.getElementById(
+                "phases"
+            );
+
+        const currentCharge =
+            document.getElementById(
+                "currentCharge"
+            );
+
+        const targetCharge =
+            document.getElementById(
+                "targetCharge"
+            );
+
+        const efficiency =
+            document.getElementById(
+                "efficiency"
+            );
+
+        const currentChargeValue =
+            document.getElementById(
+                "currentChargeValue"
+            );
+
+        const targetChargeValue =
+            document.getElementById(
+                "targetChargeValue"
+            );
+
+        const resultHours =
+            document.getElementById(
+                "resultHours"
+            );
+
+        const powerResult =
+            document.getElementById(
+                "powerResult"
+            );
+
+        const effectivePowerResult =
+            document.getElementById(
+                "effectivePowerResult"
+            );
+
+        const energyResult =
+            document.getElementById(
+                "energyResult"
+            );
+
+        const chargeIncreaseResult =
+            document.getElementById(
+                "chargeIncreaseResult"
+            );
+
+        const batteryLabel =
+            document.getElementById(
+                "batteryLabel"
+            );
+
+        const chargeFill =
+            document.getElementById(
+                "chargeFill"
+            );
+
+        const notice =
+            document.getElementById(
+                "notice"
+            );
+
+
+        function updateRangeLabels() {
+
+            currentChargeValue.textContent =
+                `${currentCharge.value}%`;
+
+            targetChargeValue.textContent =
+                `${targetCharge.value}%`;
+
+        }
+
+
+        function calculateChargingTime() {
+
+            const capacity =
+                Number(
+                    batteryCapacity.value
+                );
+
+            const volts =
+                Number(
+                    voltage.value
+                );
+
+            const amps =
+                Number(
+                    current.value
+                );
+
+            const phaseCount =
+                Number(
+                    phases.value
+                );
+
+            const start =
+                Number(
+                    currentCharge.value
+                );
+
+            const target =
+                Number(
+                    targetCharge.value
+                );
+
+            const efficiencyValue =
+                Number(
+                    efficiency.value
+                );
+
+
+            if (
+                !Number.isFinite(capacity) ||
+                !Number.isFinite(volts) ||
+                !Number.isFinite(amps) ||
+                capacity <= 0 ||
+                volts <= 0 ||
+                amps <= 0
+            ) {
+
+                showError(
+                    "Enter valid positive values."
+                );
+
+                return;
+            }
+
+
+            if (target <= start) {
+
+                showError(
+                    "Target charge must be higher than the current charge."
+                );
+
+                return;
+            }
+
+
+            const chargeIncrease =
+                target - start;
+
+
+            const energyNeeded =
+                capacity *
+                (
+                    chargeIncrease /
+                    100
+                );
+
+
+            let chargingPower;
+
+
+            if (phaseCount === 3) {
+
+                chargingPower =
+                    (
+                        Math.sqrt(3) *
+                        volts *
+                        amps
+                    ) /
+                    1000;
+
+            } else {
+
+                chargingPower =
+                    (
+                        volts *
+                        amps
+                    ) /
+                    1000;
+
+            }
+
+
+            const effectivePower =
+                chargingPower *
+                efficiencyValue;
+
+
+            const timeHours =
+                energyNeeded /
+                effectivePower;
+
+
+            if (
+                !Number.isFinite(timeHours) ||
+                timeHours <= 0
+            ) {
+
+                showError(
+                    "Unable to calculate with these values."
+                );
+
+                return;
+            }
+
+
+            const hours =
+                Math.floor(
+                    timeHours
+                );
+
+            const minutes =
+                Math.round(
+                    (
+                        timeHours -
+                        hours
+                    ) *
+                    60
+                );
+
+
+            let timeText = "";
+
+
+            if (hours > 0) {
+
+                timeText +=
+                    `${hours} h `;
+
+            }
+
+
+            timeText +=
+                `${minutes} min`;
+
+
+            resultHours.textContent =
+                timeText;
+
+            powerResult.textContent =
+                `${chargingPower.toFixed(2)} kW`;
+
+            effectivePowerResult.textContent =
+                `${effectivePower.toFixed(2)} kW`;
+
+            energyResult.textContent =
+                `${energyNeeded.toFixed(2)} kWh`;
+
+            chargeIncreaseResult.textContent =
+                `${chargeIncrease}%`;
+
+            batteryLabel.textContent =
+                `${start}% → ${target}%`;
+
+            chargeFill.style.width =
+                `${target}%`;
+
+            notice.textContent =
+                "Estimate calculated successfully. Real charging time may vary depending on the vehicle, charger and battery conditions.";
+
+        }
+
+
+        function showError(
+            message
+        ) {
+
+            resultHours.textContent =
+                "—";
+
+            powerResult.textContent =
+                "—";
+
+            effectivePowerResult.textContent =
+                "—";
+
+            energyResult.textContent =
+                "—";
+
+            chargeIncreaseResult.textContent =
+                "—";
+
+            notice.textContent =
+                message;
+
+        }
+
+
+        currentCharge.addEventListener(
+            "input",
+            () => {
+
+                updateRangeLabels();
+
+            }
+        );
+
+
+        targetCharge.addEventListener(
+            "input",
+            () => {
+
+                updateRangeLabels();
+
+            }
+        );
+
+
+        document
+            .getElementById(
+                "calculateButton"
+            )
+            .addEventListener(
+                "click",
+                calculateChargingTime
+            );
+
+
+        [
+            batteryCapacity,
+            voltage,
+            current,
+            phases,
+            currentCharge,
+            targetCharge,
+            efficiency
+        ].forEach(
+            element => {
+
+                element.addEventListener(
+                    "change",
+                    calculateChargingTime
+                );
+
+            }
+        );
+
+
+        updateRangeLabels();
+
+        calculateChargingTime();
+
+    </script>
+
+</body>
+
+</html>

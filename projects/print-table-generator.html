@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Print Table Generator | Java Projects</title>
+
+    <link
+        rel="stylesheet"
+        href="../main.css"
+    >
+
+    <style>
+
+        .demo-page {
+            width: min(calc(100% - 40px), 1100px);
+            margin: 0 auto;
+            padding: 70px 0 120px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 40px;
+            color: #f59e0b;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .project-intro {
+            margin-bottom: 45px;
+        }
+
+        .project-intro h1 {
+            font-size: clamp(2.5rem, 6vw, 4.8rem);
+            line-height: 1;
+            letter-spacing: -0.06em;
+        }
+
+        .project-intro p {
+            max-width: 720px;
+            margin-top: 20px;
+            color: #9ca6b5;
+        }
+
+        .app-shell {
+            overflow: hidden;
+            margin-top: 45px;
+            border: 1px solid #293241;
+            border-radius: 18px;
+            background: #0e131b;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
+        }
+
+        .window-bar {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 16px;
+            border-bottom: 1px solid #252d3a;
+            background: #0a0e14;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .window-dot:nth-child(1) {
+            background: #ef4444;
+        }
+
+        .window-dot:nth-child(2) {
+            background: #f59e0b;
+        }
+
+        .window-dot:nth-child(3) {
+            background: #22c55e;
+        }
+
+        .window-title {
+            margin-left: auto;
+            color: #778196;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        .app-content {
+            display: grid;
+            grid-template-columns: 330px 1fr;
+            gap: 24px;
+            padding: 32px;
+        }
+
+        .panel {
+            padding: 24px;
+            border: 1px solid #293241;
+            border-radius: 14px;
+            background: #111722;
+        }
+
+        .eyebrow-local {
+            display: block;
+            margin-bottom: 12px;
+            color: #f59e0b;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.13em;
+        }
+
+        .panel h2 {
+            margin-bottom: 18px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aeb7c5;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            border: 1px solid #303847;
+            border-radius: 8px;
+            outline: none;
+            background: #090d13;
+            color: white;
+            font: inherit;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #f59e0b;
+        }
+
+        .button-stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .primary-button,
+        .secondary-button {
+            min-height: 48px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .primary-button {
+            border: none;
+            background: #f59e0b;
+            color: #111;
+        }
+
+        .secondary-button {
+            border: 1px solid #303847;
+            background: #151b25;
+            color: white;
+        }
+
+        .table-panel {
+            min-width: 0;
+        }
+
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .table-toolbar h2 {
+            margin: 0;
+        }
+
+        .table-meta {
+            color: #7f8998;
+            font-size: 0.8rem;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid #293241;
+            border-radius: 10px;
+            background: #090d13;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #252d3a;
+            border-right: 1px solid #252d3a;
+            text-align: left;
+        }
+
+        th:last-child,
+        td:last-child {
+            border-right: none;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        th {
+            background: #151b25;
+            color: #f59e0b;
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+        }
+
+        .table-input {
+            width: 100%;
+            min-width: 90px;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            outline: none;
+            background: transparent;
+            color: #d3dae4;
+            font: inherit;
+        }
+
+        .table-input:hover {
+            border-color: #303847;
+            background: #111722;
+        }
+
+        .table-input:focus {
+            border-color: #f59e0b;
+            background: #111722;
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #7f8998;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .stat-card {
+            padding: 16px;
+            border: 1px solid #293241;
+            border-radius: 10px;
+            background: #0b1017;
+        }
+
+        .stat-card span {
+            display: block;
+            color: #7f8998;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-card strong {
+            display: block;
+            margin-top: 7px;
+            font-size: 1.35rem;
+        }
+
+        .preview-box {
+            margin-top: 18px;
+            padding: 16px;
+            border: 1px solid #293241;
+            border-radius: 10px;
+            background: #090d13;
+        }
+
+        .preview-box h3 {
+            margin-bottom: 10px;
+            color: #f59e0b;
+            font-size: 0.8rem;
+        }
+
+        .preview-box pre {
+            overflow-x: auto;
+            color: #b9c2cf;
+            font-family: monospace;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .project-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 70px;
+        }
+
+        .info-card {
+            padding: 28px;
+            border: 1px solid #252d3a;
+            border-radius: 12px;
+            background: #0e131b;
+        }
+
+        .info-card h2 {
+            margin-bottom: 14px;
+        }
+
+        .info-card p {
+            color: #9ca6b5;
+        }
+
+        @media (max-width: 850px) {
+
+            .app-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid,
+            .project-details {
+                grid-template-columns: 1fr;
+            }
+
+            .table-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="demo-page">
+
+        <a
+            href="../index.html#projects"
+            class="back-link"
+        >
+            ← Back to Java Projects
+        </a>
+
+        <section class="project-intro">
+
+            <p class="eyebrow">
+                JAVA DATA FORMATTING PROJECT
+            </p>
+
+            <h1>
+                Print Table Generator
+            </h1>
+
+            <p>
+                Create a custom table, choose the number of rows and columns,
+                and edit every value directly inside the generated table.
+            </p>
+
+        </section>
+
+
+        <section class="app-shell">
+
+            <div class="window-bar">
+
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+
+                <span class="window-title">
+                    PrintTable.java
+                </span>
+
+            </div>
+
+
+            <div class="app-content">
+
+                <section class="panel">
+
+                    <span class="eyebrow-local">
+                        TABLE SETTINGS
+                    </span>
+
+                    <h2>
+                        Build your table
+                    </h2>
+
+
+                    <div class="field">
+
+                        <label for="rowCount">
+                            Rows
+                        </label>
+
+                        <input
+                            id="rowCount"
+                            type="number"
+                            min="1"
+                            max="20"
+                            value="5"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="columnCount">
+                            Columns
+                        </label>
+
+                        <input
+                            id="columnCount"
+                            type="number"
+                            min="1"
+                            max="8"
+                            value="4"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="dataType">
+                            Starting values
+                        </label>
+
+                        <select id="dataType">
+
+                            <option value="blank">
+                                Blank table
+                            </option>
+
+                            <option value="numbers">
+                                Sequential numbers
+                            </option>
+
+                            <option value="random">
+                                Random numbers
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="customHeaders">
+                            Column headers
+                        </label>
+
+                        <input
+                            id="customHeaders"
+                            type="text"
+                            placeholder="Name, Score, Level, Status"
+                        >
+
+                    </div>
+
+
+                    <div class="button-stack">
+
+                        <button
+                            id="generateButton"
+                            class="primary-button"
+                        >
+                            Generate Table
+                        </button>
+
+                        <button
+                            id="randomizeButton"
+                            class="secondary-button"
+                        >
+                            Fill With Random Numbers
+                        </button>
+
+                        <button
+                            id="clearButton"
+                            class="secondary-button"
+                        >
+                            Clear All Cells
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <section class="panel table-panel">
+
+                    <div class="table-toolbar">
+
+                        <div>
+
+                            <span class="eyebrow-local">
+                                EDITABLE OUTPUT
+                            </span>
+
+                            <h2>
+                                Data Table
+                            </h2>
+
+                        </div>
+
+                        <span
+                            id="tableMeta"
+                            class="table-meta"
+                        >
+                            5 rows × 4 columns
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="tableWrap"
+                        class="table-wrap"
+                    ></div>
+
+
+                    <div class="stats-grid">
+
+                        <div class="stat-card">
+
+                            <span>
+                                Rows
+                            </span>
+
+                            <strong id="statRows">
+                                5
+                            </strong>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <span>
+                                Columns
+                            </span>
+
+                            <strong id="statColumns">
+                                4
+                            </strong>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <span>
+                                Cells
+                            </span>
+
+                            <strong id="statCells">
+                                20
+                            </strong>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <span>
+                                Numeric total
+                            </span>
+
+                            <strong id="statTotal">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="preview-box">
+
+                        <h3>
+                            JAVA-STYLE OUTPUT PREVIEW
+                        </h3>
+
+                        <pre id="consolePreview"></pre>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <section class="project-details">
+
+            <article class="info-card">
+
+                <p class="eyebrow">
+                    PROGRAMMING CONCEPTS
+                </p>
+
+                <h2>
+                    Arrays & nested loops
+                </h2>
+
+                <p>
+                    The project demonstrates structured data, rows,
+                    columns, arrays, nested loops and formatted output.
+                </p>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <p class="eyebrow">
+                    INTERACTIVE VERSION
+                </p>
+
+                <h2>
+                    Editable table
+                </h2>
+
+                <p>
+                    Every generated cell can be edited manually. The
+                    underlying data updates immediately while the preview
+                    and numeric totals refresh live.
+                </p>
+
+            </article>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        let currentData = [];
+
+
+        const rowCount =
+            document.getElementById(
+                "rowCount"
+            );
+
+        const columnCount =
+            document.getElementById(
+                "columnCount"
+            );
+
+        const dataType =
+            document.getElementById(
+                "dataType"
+            );
+
+        const customHeaders =
+            document.getElementById(
+                "customHeaders"
+            );
+
+        const tableWrap =
+            document.getElementById(
+                "tableWrap"
+            );
+
+        const tableMeta =
+            document.getElementById(
+                "tableMeta"
+            );
+
+        const statRows =
+            document.getElementById(
+                "statRows"
+            );
+
+        const statColumns =
+            document.getElementById(
+                "statColumns"
+            );
+
+        const statCells =
+            document.getElementById(
+                "statCells"
+            );
+
+        const statTotal =
+            document.getElementById(
+                "statTotal"
+            );
+
+        const consolePreview =
+            document.getElementById(
+                "consolePreview"
+            );
+
+
+        function getHeaders(
+            columns
+        ) {
+
+            const typedHeaders =
+                customHeaders.value
+                    .split(",")
+                    .map(
+                        value =>
+                            value.trim()
+                    )
+                    .filter(Boolean);
+
+
+            const headers = [];
+
+
+            for (
+                let i = 0;
+                i < columns;
+                i++
+            ) {
+
+                headers.push(
+                    typedHeaders[i] ||
+                    `Column ${i + 1}`
+                );
+
+            }
+
+
+            return headers;
+
+        }
+
+
+        function createStartingValue(
+            row,
+            column
+        ) {
+
+            if (
+                dataType.value ===
+                "numbers"
+            ) {
+
+                return String(
+                    row *
+                    Number(
+                        columnCount.value
+                    ) +
+                    column +
+                    1
+                );
+
+            }
+
+
+            if (
+                dataType.value ===
+                "random"
+            ) {
+
+                return String(
+                    Math.floor(
+                        Math.random() *
+                        100
+                    )
+                );
+
+            }
+
+
+            return "";
+
+        }
+
+
+        function generateTable() {
+
+            const rows =
+                Math.max(
+                    1,
+                    Math.min(
+                        20,
+                        Number(
+                            rowCount.value
+                        ) || 1
+                    )
+                );
+
+
+            const columns =
+                Math.max(
+                    1,
+                    Math.min(
+                        8,
+                        Number(
+                            columnCount.value
+                        ) || 1
+                    )
+                );
+
+
+            rowCount.value =
+                rows;
+
+            columnCount.value =
+                columns;
+
+
+            currentData = [];
+
+
+            for (
+                let row = 0;
+                row < rows;
+                row++
+            ) {
+
+                const rowData = [];
+
+
+                for (
+                    let column = 0;
+                    column < columns;
+                    column++
+                ) {
+
+                    rowData.push(
+                        createStartingValue(
+                            row,
+                            column
+                        )
+                    );
+
+                }
+
+
+                currentData.push(
+                    rowData
+                );
+
+            }
+
+
+            renderTable();
+
+        }
+
+
+        function renderTable() {
+
+            if (
+                currentData.length ===
+                0
+            ) {
+
+                tableWrap.innerHTML = `
+                    <div class="empty-state">
+                        Generate a table to begin.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            const rows =
+                currentData.length;
+
+            const columns =
+                currentData[0].length;
+
+            const headers =
+                getHeaders(
+                    columns
+                );
+
+
+            const table =
+                document.createElement(
+                    "table"
+                );
+
+
+            const thead =
+                document.createElement(
+                    "thead"
+                );
+
+
+            const headerRow =
+                document.createElement(
+                    "tr"
+                );
+
+
+            headers.forEach(
+                header => {
+
+                    const th =
+                        document.createElement(
+                            "th"
+                        );
+
+                    th.textContent =
+                        header;
+
+                    headerRow.appendChild(
+                        th
+                    );
+
+                }
+            );
+
+
+            thead.appendChild(
+                headerRow
+            );
+
+            table.appendChild(
+                thead
+            );
+
+
+            const tbody =
+                document.createElement(
+                    "tbody"
+                );
+
+
+            currentData.forEach(
+                (
+                    row,
+                    rowIndex
+                ) => {
+
+                    const tr =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    row.forEach(
+                        (
+                            value,
+                            columnIndex
+                        ) => {
+
+                            const td =
+                                document.createElement(
+                                    "td"
+                                );
+
+
+                            const input =
+                                document.createElement(
+                                    "input"
+                                );
+
+
+                            input.className =
+                                "table-input";
+
+                            input.type =
+                                "text";
+
+                            input.value =
+                                value;
+
+                            input.placeholder =
+                                "Enter value";
+
+
+                            input.addEventListener(
+                                "input",
+                                event => {
+
+                                    currentData[
+                                        rowIndex
+                                    ][
+                                        columnIndex
+                                    ] =
+                                        event.target
+                                            .value;
+
+
+                                    updateStats();
+
+                                    updateConsolePreview();
+
+                                }
+                            );
+
+
+                            td.appendChild(
+                                input
+                            );
+
+
+                            tr.appendChild(
+                                td
+                            );
+
+                        }
+                    );
+
+
+                    tbody.appendChild(
+                        tr
+                    );
+
+                }
+            );
+
+
+            table.appendChild(
+                tbody
+            );
+
+
+            tableWrap.innerHTML =
+                "";
+
+            tableWrap.appendChild(
+                table
+            );
+
+
+            tableMeta.textContent =
+                `${rows} rows × ${columns} columns`;
+
+
+            updateStats();
+
+            updateConsolePreview();
+
+        }
+
+
+        function updateStats() {
+
+            const rows =
+                currentData.length;
+
+
+            const columns =
+                rows > 0
+                    ? currentData[0].length
+                    : 0;
+
+
+            const numericTotal =
+                currentData.reduce(
+                    (
+                        tableSum,
+                        row
+                    ) => {
+
+                        return (
+                            tableSum +
+                            row.reduce(
+                                (
+                                    rowSum,
+                                    value
+                                ) => {
+
+                                    const number =
+                                        Number(
+                                            value
+                                        );
+
+
+                                    return (
+                                        rowSum +
+                                        (
+                                            Number.isFinite(
+                                                number
+                                            ) &&
+                                            value !== ""
+                                                ? number
+                                                : 0
+                                        )
+                                    );
+
+                                },
+                                0
+                            )
+                        );
+
+                    },
+                    0
+                );
+
+
+            statRows.textContent =
+                rows;
+
+            statColumns.textContent =
+                columns;
+
+            statCells.textContent =
+                rows *
+                columns;
+
+            statTotal.textContent =
+                numericTotal;
+
+        }
+
+
+        function randomizeTable() {
+
+            if (
+                currentData.length ===
+                0
+            ) {
+
+                generateTable();
+
+            }
+
+
+            currentData =
+                currentData.map(
+                    row =>
+                        row.map(
+                            () =>
+                                String(
+                                    Math.floor(
+                                        Math.random() *
+                                        100
+                                    )
+                                )
+                        )
+                );
+
+
+            renderTable();
+
+        }
+
+
+        function clearTable() {
+
+            currentData =
+                currentData.map(
+                    row =>
+                        row.map(
+                            () => ""
+                        )
+                );
+
+
+            renderTable();
+
+        }
+
+
+        function updateConsolePreview() {
+
+            if (
+                currentData.length ===
+                0
+            ) {
+
+                consolePreview.textContent =
+                    "";
+
+                return;
+
+            }
+
+
+            const headers =
+                getHeaders(
+                    currentData[0].length
+                );
+
+
+            const allRows = [
+                headers,
+                ...currentData
+            ];
+
+
+            const columnWidths =
+                headers.map(
+                    (
+                        _,
+                        columnIndex
+                    ) => {
+
+                        return Math.max(
+                            ...allRows.map(
+                                row =>
+                                    String(
+                                        row[
+                                            columnIndex
+                                        ] ?? ""
+                                    ).length
+                            ),
+                            6
+                        );
+
+                    }
+                );
+
+
+            const output =
+                allRows
+                    .map(
+                        (
+                            row,
+                            rowIndex
+                        ) => {
+
+                            const line =
+                                row.map(
+                                    (
+                                        value,
+                                        columnIndex
+                                    ) => {
+
+                                        return String(
+                                            value ?? ""
+                                        ).padEnd(
+                                            columnWidths[
+                                                columnIndex
+                                            ]
+                                        );
+
+                                    }
+                                )
+                                .join(
+                                    " | "
+                                );
+
+
+                            if (
+                                rowIndex ===
+                                0
+                            ) {
+
+                                const divider =
+                                    columnWidths
+                                        .map(
+                                            width =>
+                                                "-".repeat(
+                                                    width
+                                                )
+                                        )
+                                        .join(
+                                            "-+-"
+                                        );
+
+
+                                return (
+                                    line +
+                                    "\n" +
+                                    divider
+                                );
+
+                            }
+
+
+                            return line;
+
+                        }
+                    )
+                    .join(
+                        "\n"
+                    );
+
+
+            consolePreview.textContent =
+                output;
+
+        }
+
+
+        document
+            .getElementById(
+                "generateButton"
+            )
+            .addEventListener(
+                "click",
+                generateTable
+            );
+
+
+        document
+            .getElementById(
+                "randomizeButton"
+            )
+            .addEventListener(
+                "click",
+                randomizeTable
+            );
+
+
+        document
+            .getElementById(
+                "clearButton"
+            )
+            .addEventListener(
+                "click",
+                clearTable
+            );
+
+
+        customHeaders.addEventListener(
+            "input",
+            () => {
+
+                if (
+                    currentData.length >
+                    0
+                ) {
+
+                    renderTable();
+
+                }
+
+            }
+        );
+
+
+        generateTable();
+
+    </script>
+
+</body>
+
+</html>

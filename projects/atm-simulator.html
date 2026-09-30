@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ATM Simulator | Java Projects</title>
+
+    <link
+        rel="stylesheet"
+        href="../main.css"
+    >
+
+    <style>
+
+        .demo-page {
+            width: min(
+                calc(100% - 40px),
+                1000px
+            );
+
+            margin: 0 auto;
+            padding: 70px 0 120px;
+        }
+
+        .back-link {
+            display: inline-block;
+
+            color: #f59e0b;
+
+            margin-bottom: 40px;
+
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .project-intro {
+            margin-bottom: 40px;
+        }
+
+        .project-intro h1 {
+            font-size: clamp(
+                2.5rem,
+                6vw,
+                4.8rem
+            );
+
+            letter-spacing: -0.06em;
+
+            line-height: 1;
+        }
+
+        .project-intro p {
+            max-width: 650px;
+
+            margin-top: 20px;
+
+            color: #9ca6b5;
+        }
+
+
+        /* ATM WINDOW */
+
+        .atm-window {
+            overflow: hidden;
+
+            max-width: 700px;
+
+            margin: 50px auto;
+
+            border: 1px solid #293241;
+            border-radius: 18px;
+
+            background: #0e131b;
+
+            box-shadow:
+                0 40px 100px
+                rgba(0, 0, 0, 0.45);
+        }
+
+        .window-bar {
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 0 16px;
+
+            border-bottom:
+                1px solid
+                #252d3a;
+
+            background: #0a0e14;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+
+            border-radius: 50%;
+
+            background: #475569;
+        }
+
+        .window-title {
+            margin-left: auto;
+
+            color: #778196;
+
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+
+        /* ATM */
+
+        .atm {
+            padding: 44px;
+        }
+
+        .atm-label {
+            color: #8d97a7;
+
+            font-size: 0.8rem;
+            text-transform: uppercase;
+
+            letter-spacing: 0.13em;
+        }
+
+        .balance {
+            margin-top: 8px;
+
+            font-size: 3rem;
+            font-weight: 800;
+
+            letter-spacing: -0.05em;
+        }
+
+        .currency {
+            color: #f59e0b;
+        }
+
+        .atm-divider {
+            height: 1px;
+
+            margin: 32px 0;
+
+            background: #252d3a;
+        }
+
+        .amount-input {
+            width: 100%;
+
+            height: 55px;
+
+            padding: 0 16px;
+
+            border: 1px solid #303847;
+            border-radius: 9px;
+
+            outline: none;
+
+            background: #090d13;
+
+            color: white;
+
+            font-size: 1rem;
+        }
+
+        .amount-input:focus {
+            border-color: #f59e0b;
+        }
+
+        .atm-actions {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+        .atm-button {
+            min-height: 48px;
+
+            border: 1px solid #303847;
+            border-radius: 8px;
+
+            background: #151b25;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            transition: 0.2s ease;
+        }
+
+        .atm-button:hover {
+            transform:
+                translateY(-2px);
+
+            border-color: #f59e0b;
+        }
+
+        .atm-button.primary {
+            border: none;
+
+            background: #f59e0b;
+
+            color: #111;
+        }
+
+        .atm-status {
+            min-height: 48px;
+
+            display: flex;
+            align-items: center;
+
+            margin-top: 25px;
+
+            padding: 0 15px;
+
+            border: 1px solid #252d3a;
+            border-radius: 8px;
+
+            background: #090d13;
+
+            color: #9ca6b5;
+        }
+
+        .atm-status.success {
+            color: #86efac;
+        }
+
+        .atm-status.error {
+            color: #fca5a5;
+        }
+
+
+        /* INFO */
+
+        .project-details {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+
+            margin-top: 70px;
+        }
+
+        .info-card {
+            padding: 28px;
+
+            border: 1px solid #252d3a;
+            border-radius: 12px;
+
+            background: #0e131b;
+        }
+
+        .info-card h2 {
+            margin-bottom: 15px;
+        }
+
+        .info-card p {
+            color: #9ca6b5;
+        }
+
+        @media (
+            max-width: 650px
+        ) {
+
+            .atm {
+                padding: 28px 20px;
+            }
+
+            .balance {
+                font-size: 2.3rem;
+            }
+
+            .project-details {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="demo-page">
+
+        <a
+            href="../index.html#projects"
+            class="back-link"
+        >
+            ← Back to Java Projects
+        </a>
+
+
+        <section class="project-intro">
+
+            <p class="eyebrow">
+                JAVA APPLICATION
+            </p>
+
+            <h1>
+                ATM Simulator
+            </h1>
+
+            <p>
+                An interactive browser demonstration of my
+                Java ATM project. The original application
+                demonstrates user input, validation, methods,
+                state management and control flow.
+            </p>
+
+        </section>
+
+
+        <!-- ATM GUI -->
+
+        <section class="atm-window">
+
+            <div class="window-bar">
+
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+                <span class="window-dot"></span>
+
+                <span class="window-title">
+                    ATMApplication.java
+                </span>
+
+            </div>
+
+
+            <div class="atm">
+
+                <div class="atm-label">
+                    Available Balance
+                </div>
+
+                <div class="balance">
+
+                    <span id="balance">
+                        12,500.00
+                    </span>
+
+                    <span class="currency">
+                        SEK
+                    </span>
+
+                </div>
+
+
+                <div class="atm-divider"></div>
+
+
+                <label
+                    class="atm-label"
+                    for="amount"
+                >
+                    Transaction amount
+                </label>
+
+                <input
+                    id="amount"
+                    class="amount-input"
+                    type="number"
+                    min="1"
+                    step="0.01"
+                    placeholder="Enter amount"
+                >
+
+
+                <div class="atm-actions">
+
+                    <button
+                        class="atm-button primary"
+                        id="depositButton"
+                    >
+                        Deposit
+                    </button>
+
+                    <button
+                        class="atm-button"
+                        id="withdrawButton"
+                    >
+                        Withdraw
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="status"
+                    class="atm-status"
+                >
+                    Ready
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROJECT INFO -->
+
+        <section class="project-details">
+
+            <article class="info-card">
+
+                <p class="eyebrow">
+                    CONCEPTS
+                </p>
+
+                <h2>
+                    What it demonstrates
+                </h2>
+
+                <p>
+                    Methods, user input, numerical validation,
+                    conditional logic and managing changing
+                    application state.
+                </p>
+
+            </article>
+
+
+            <article class="info-card">
+
+                <p class="eyebrow">
+                    IMPLEMENTATION
+                </p>
+
+                <h2>
+                    Java + JavaFX
+                </h2>
+
+                <p>
+                    The original logic is written in Java.
+                    A JavaFX version provides the native GUI,
+                    while this page recreates the interaction
+                    for the browser.
+                </p>
+
+            </article>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        let balance = 12500;
+
+
+        const balanceElement =
+            document.getElementById(
+                "balance"
+            );
+
+        const amountInput =
+            document.getElementById(
+                "amount"
+            );
+
+        const statusElement =
+            document.getElementById(
+                "status"
+            );
+
+
+        function formatBalance() {
+
+            return balance.toLocaleString(
+                "en-SE",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+        }
+
+
+        function updateBalance() {
+
+            balanceElement.textContent =
+                formatBalance();
+
+        }
+
+
+        function getAmount() {
+
+            const amount =
+                Number(
+                    amountInput.value
+                );
+
+
+            if (
+                !Number.isFinite(amount) ||
+                amount <= 0
+            ) {
+
+                setStatus(
+                    "Enter a valid amount above 0.",
+                    "error"
+                );
+
+                return null;
+
+            }
+
+
+            return amount;
+
+        }
+
+
+        function setStatus(
+            message,
+            type
+        ) {
+
+            statusElement.textContent =
+                message;
+
+            statusElement.className =
+                "atm-status";
+
+            if (type) {
+
+                statusElement.classList.add(
+                    type
+                );
+
+            }
+
+        }
+
+
+        document
+            .getElementById(
+                "depositButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    const amount =
+                        getAmount();
+
+
+                    if (amount === null) {
+
+                        return;
+
+                    }
+
+
+                    balance += amount;
+
+                    updateBalance();
+
+                    amountInput.value = "";
+
+                    setStatus(
+                        `Deposited ${amount.toFixed(2)} SEK`,
+                        "success"
+                    );
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "withdrawButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    const amount =
+                        getAmount();
+
+
+                    if (amount === null) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        amount > balance
+                    ) {
+
+                        setStatus(
+                            "Insufficient funds.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    balance -= amount;
+
+                    updateBalance();
+
+                    amountInput.value = "";
+
+                    setStatus(
+                        `Withdrew ${amount.toFixed(2)} SEK`,
+                        "success"
+                    );
+
+                }
+            );
+
+
+        updateBalance();
+
+    </script>
+
+
+</body>
+
+</html>
